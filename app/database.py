@@ -2,7 +2,7 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.engine import URL
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
 
-import psycopg2
+
 from dotenv import load_dotenv
 import os
 
@@ -25,6 +25,8 @@ SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 class Base(DeclarativeBase):
     pass
 
+import app.models
+
 def get_db():
     db = SessionLocal()
     try:
@@ -33,13 +35,3 @@ def get_db():
     finally:
         db.close()
         print("Conexión cerrada")
-
-def test_connection():
-    try:
-        with engine.connect() as conn:
-            result = conn.execute(text("SELECT 1"))
-            print("Conexión exitosa:", result.fetchone())
-    except Exception as e:
-        print("Error al conectar:", e)
-
-test_connection()
