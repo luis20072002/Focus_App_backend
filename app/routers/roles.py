@@ -1,56 +1,66 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models.role import Role
 from app.models.user import User
 from app.schemas.role import RoleCreate, RoleUpdate, RoleResponse
-from app.services.auth import get_current_active_user
+from dependencies import solo_admin
 
 router = APIRouter(prefix="/roles", tags=["Roles"])
 
 
 @router.get("/", response_model=list[RoleResponse])
-def get_roles(db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
+def get_roles(db: Session = Depends(get_db), current_user: User = Depends(solo_admin)):
     return db.query(Role).all()
 
 
 @router.get("/{role_id}", response_model=RoleResponse)
-def get_role(role_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
-    role = db.query(Role).filter(Role.id_role == role_id).first()
-    if not role:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Rol no encontrado")
-    return role
+def get_rol(role_id: int, db: Session = Depends(get_db), current_user: User = Depends(solo_admin)):
+    rol = db.query(Role).filter(Role.id_role == role_id).first()
+    if not rol:
+        raise HTTPException(status_code=404, detail="Rol no encontrado")
+    return rol
 
 
-@router.post("/", response_model=RoleResponse, status_code=status.HTTP_201_CREATED)
-def create_role(data: RoleCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
-    existing = db.query(Role).filter(Role.id_role == data.id_role).first()
-    if existing:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Ya existe un rol con ese ID")
-    role = Role(**data.model_dump())
-    db.add(role)
+@router.post("/", response_model=RoleResponse, status_code=201)
+def crear_rol(datos: RoleCreate, db: Session = Depends(get_db), current_user: User = Depends(solo_admin)):
+    existe = db.query(Role).filter(Role.id_role == datos.id_role).first()
+    if existe:
+        raise HTTPException(status_code=400, detail="Ya existe un rol con ese ID")
+    rol = Role(**datos.model_dump())
+    db.add(rol)
     db.commit()
-    db.refresh(role)
-    return role
+    db.refresh(rol)
+    return rol
 
 
 @router.put("/{role_id}", response_model=RoleResponse)
-def update_role(role_id: int, data: RoleUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
-    role = db.query(Role).filter(Role.id_role == role_id).first()
-    if not role:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Rol no encontrado")
-    for field, value in data.model_dump(exclude_unset=True).items():
-        setattr(role, field, value)
+def actualizar_rol(
+    role_id: int,
+    datos: RoleUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(solo_admin)
+):
+    rol = db.query(Role).filter(Role.id_role == role_id).first()
+    if not rol:
+        raise HTTPException(status_code=404, detail="Rol no encontrado")
+
+    if datos.name_role is not None:
+        rol.name_role = datos.name_role
+    if datos.description is not None:
+        rol.description = datos.description
+
     db.commit()
-    db.refresh(role)
-    return role
+    db.refresh(rol)
+    return rol
 
 
-@router.delete("/{role_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_role(role_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
-    role = db.query(Role).filter(Role.id_role == role_id).first()
-    if not role:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Rol no encontrado")
-    db.delete(role)
+@router.delete("/{role_id}", status_code=200)
+def eliminar_rol(role_id: int, db: Session = Depends(get_db), current_user: User = Depends(solo_admin)):
+    rol = db.query(Role).filter(Role.id_role == role_id).first()
+    if not rol:
+        raise HTTPException(status_code=404, detail="Rol no encontrado")
+    db.delete(rol)
     db.commit()
+    return {"detail": "Rol eliminado correctamente"}
