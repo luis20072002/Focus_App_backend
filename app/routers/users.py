@@ -82,6 +82,9 @@ def actualizar_usuario(
     db.refresh(usuario)
     return usuario
 
+@router.post("/logout")
+def logout(current_user: User = Depends(get_current_user)):
+    return {"detail": "Sesion cerrada correctamente"}
 
 @router.delete("/{user_id}", status_code=200)
 def eliminar_usuario(

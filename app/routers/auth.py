@@ -96,7 +96,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     if not usuario.active:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="La cuenta está desactivada")
 
-    token = crear_token({"sub": usuario.id_user})
+    token = crear_token({"sub": str(usuario.id_user)})
     return {"access_token": token, "token_type": "bearer"}
 
 

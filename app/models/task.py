@@ -1,8 +1,8 @@
 from typing import Optional
 from app.database import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import String, Text, Boolean, Integer, DateTime, ForeignKey, CheckConstraint, Enum
-from datetime import datetime
+from sqlalchemy import String, Text, Boolean, Integer, DateTime, Date, ForeignKey, CheckConstraint, Enum
+from datetime import datetime, date
 import enum
 
 
@@ -19,6 +19,13 @@ class TaskStatus(enum.Enum):
     expired = "vencida"
 
 
+class TaskRecurrenceType(enum.Enum):
+    none = "ninguna"
+    daily = "diaria"
+    weekly = "semanal"
+    custom = "personalizada"
+
+
 class Task(Base):
     __tablename__ = "task"
 
@@ -33,6 +40,14 @@ class Task(Base):
     status: Mapped[TaskStatus] = mapped_column(Enum(TaskStatus), nullable=False)
     foints_earned: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+
+    # Campos de recurrencia
+    is_recurrent: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    recurrence_type: Mapped[TaskRecurrenceType] = mapped_column(Enum(TaskRecurrenceType), nullable=False, default=TaskRecurrenceType.none)
+    # Dias de recurrencia: string con dias separados por coma (1=lunes ... 7=domingo)
+    # Ejemplo: "1,3,5" = lunes, miercoles, viernes
+    recurrence_days: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
+    recurrence_end_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
 
     __table_args__ = (
         CheckConstraint("foints_earned IS NULL OR foints_earned >= 0", name="task_foints_earned_ck"),

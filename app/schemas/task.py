@@ -1,7 +1,7 @@
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, model_validator
 from typing import Optional
-from datetime import datetime
-from app.models.task import TaskNotificationType, TaskStatus
+from datetime import datetime, date
+from app.models.task import TaskNotificationType, TaskStatus, TaskRecurrenceType
 
 
 class TaskBase(BaseModel):
@@ -13,9 +13,35 @@ class TaskBase(BaseModel):
     notification_type: TaskNotificationType
     status: TaskStatus = TaskStatus.pending
 
+    # Recurrencia
+    is_recurrent: bool = False
+    recurrence_type: TaskRecurrenceType = TaskRecurrenceType.none
+    recurrence_days: Optional[str] = None  # "1,2,3" = lunes, martes, miercoles
+    recurrence_end_date: Optional[date] = None
+
+    @model_validator(mode="after")
+    def validar_recurrencia(self) -> "TaskBase":
+        if self.is_recurrent:
+            if self.recurrence_type == TaskRecurrenceType.none:
+                raise ValueError("Si la tarea es recurrente debe especificar el tipo de recurrencia")
+            if self.recurrence_type in (TaskRecurrenceType.weekly, TaskRecurrenceType.custom):
+                if not self.recurrence_days:
+                    raise ValueError("Debe especificar los dias de recurrencia para recurrencia semanal o personalizada")
+                # Validar que los dias sean numeros del 1 al 7
+                dias = self.recurrence_days.split(",")
+                for dia in dias:
+                    if not dia.strip().isdigit() or int(dia.strip()) not in range(1, 8):
+                        raise ValueError("Los dias de recurrencia deben ser numeros del 1 (lunes) al 7 (domingo)")
+        else:
+            # Si no es recurrente, limpiar campos de recurrencia
+            self.recurrence_type = TaskRecurrenceType.none
+            self.recurrence_days = None
+            self.recurrence_end_date = None
+        return self
+
 
 class TaskCreate(TaskBase):
-    pass  # id_user se obtiene del token JWT, no del body
+    pass  # id_user se obtiene del token JWT
 
 
 class TaskUpdate(BaseModel):
@@ -25,6 +51,10 @@ class TaskUpdate(BaseModel):
     scheduled_date: Optional[datetime] = None
     notification_type: Optional[TaskNotificationType] = None
     status: Optional[TaskStatus] = None
+    is_recurrent: Optional[bool] = None
+    recurrence_type: Optional[TaskRecurrenceType] = None
+    recurrence_days: Optional[str] = None
+    recurrence_end_date: Optional[date] = None
 
 
 class TaskResponse(TaskBase):
