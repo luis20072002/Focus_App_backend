@@ -11,4 +11,4 @@ class TemplateCategory (Base):
     category_name: Mapped[str]=mapped_column(String(80), nullable= False)
     category_description: Mapped[Optional[str]]=mapped_column(Text, nullable= True)
 
-    tasks_template: Mapped[list["TaskTemplate"]]=relationship(back_populates='task_template')
+    tasks_template: Mapped[list["TaskTemplate"]] = relationship(back_populates='category')
