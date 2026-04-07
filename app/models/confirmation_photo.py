@@ -25,6 +25,6 @@ class ConfirmationPhoto(Base):
 
     task: Mapped["Task"] = relationship(back_populates="confirmation_photo")
     user: Mapped["User"] = relationship(back_populates="confirmation_photos")
-
+    #uno a muchos
     likes: Mapped[list["Like"]] = relationship(back_populates="photo")
     reports: Mapped[list["Report"]] = relationship(back_populates="photo")

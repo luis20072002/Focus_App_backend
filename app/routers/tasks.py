@@ -12,11 +12,6 @@ router = APIRouter(prefix="/tasks", tags=["Tareas"])
 
 
 def tarea_aplica_hoy(tarea: Task, hoy: date) -> bool:
-    """
-    Determina si una tarea recurrente aplica para el dia dado.
-    hoy: date con la fecha a evaluar
-    Retorna True si la tarea debe aparecer ese dia.
-    """
     # Si ya paso la fecha de fin de recurrencia no aplica
     if tarea.recurrence_end_date and hoy > tarea.recurrence_end_date:
         return False
@@ -31,7 +26,6 @@ def tarea_aplica_hoy(tarea: Task, hoy: date) -> bool:
     if tarea.recurrence_type in (TaskRecurrenceType.weekly, TaskRecurrenceType.custom):
         if not tarea.recurrence_days:
             return False
-        # isoweekday(): lunes=1 ... domingo=7
         dia_hoy = str(hoy.isoweekday())
         dias = [d.strip() for d in tarea.recurrence_days.split(",")]
         return dia_hoy in dias

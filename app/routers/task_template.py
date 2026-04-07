@@ -12,7 +12,7 @@ from dependencies import get_current_user, solo_admin
 router = APIRouter(prefix="/templates", tags=["Plantillas"])
 
 
-# ── Categorias ───────────────────────────────────────────────────────────────
+# Categorias
 
 @router.get("/categories", response_model=list[TemplateCategoryResponse])
 def get_categorias(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
@@ -77,7 +77,7 @@ def eliminar_categoria(category_id: int, db: Session = Depends(get_db), current_
     return {"detail": "Categoria eliminada correctamente"}
 
 
-# ── Plantillas de tareas ─────────────────────────────────────────────────────
+#  Plantillas de tareas 
 
 @router.get("/", response_model=list[TaskTemplateResponse])
 def get_plantillas(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
