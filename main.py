@@ -5,14 +5,12 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI(
     title="Focus App API",
     description="API para la aplicación Focus App",
-    version="1.0.0"
+    version="1.0.0",
+    redirect_slashes=False
 )
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-    "http://localhost:53441",
-    "http://127.0.0.1:61438",
-],  
+    allow_origins=["*"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
