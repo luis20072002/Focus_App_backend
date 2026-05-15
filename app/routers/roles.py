@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.role import Role
 from app.models.user import User
-from app.schemas.role import RoleCreate, RoleUpdate, RoleResponse
+from app.schemas.roleSCH import RoleCreate, RoleUpdate, RoleResponse
 from dependencies import solo_admin
 
 router = APIRouter(prefix="/roles", tags=["Roles"])

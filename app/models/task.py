@@ -8,7 +8,6 @@ import enum
 
 class TaskNotificationType(enum.Enum):
     push = "push"
-    email = "email"
     none = "ninguna"
 
 
@@ -31,6 +30,7 @@ class Task(Base):
 
     id_task: Mapped[int] = mapped_column(Integer, primary_key=True)
     id_user: Mapped[int] = mapped_column(Integer, ForeignKey("user.id_user"), nullable=False)
+    is_foint_candidate: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     id_task_template: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey("task_template.id_task_template"), nullable=True)
     name: Mapped[str] = mapped_column(String(100), nullable=False)
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
@@ -50,9 +50,11 @@ class Task(Base):
     recurrence_end_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
 
     __table_args__ = (
-        CheckConstraint("foints_earned IS NULL OR foints_earned >= 0", name="task_foints_earned_ck"),
-    )
+    CheckConstraint("foints_earned IS NULL OR foints_earned >= 0", name="task_foints_earned_ck"),
+    CheckConstraint(
+        "(is_foint_candidate = FALSE) OR (id_task_template IS NOT NULL)",
+        name="task_foint_candidate_requires_template_ck"
+    ),
+)
 
     user: Mapped["User"] = relationship(back_populates="tasks")
-    task_template: Mapped[Optional["TaskTemplate"]] = relationship(back_populates="tasks")
-    confirmation_photo: Mapped[Optional["ConfirmationPhoto"]] = relationship(back_populates="task")

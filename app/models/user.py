@@ -34,23 +34,6 @@ class User(Base):
 
     tasks: Mapped[list["Task"]] = relationship(back_populates="user")
 
-    confirmation_photos: Mapped[list["ConfirmationPhoto"]] = relationship(back_populates="user")
-
-    likes: Mapped[list["Like"]] = relationship(back_populates="user")
-
-    # Como de esta tabla surgen muchas llaver foraneas, toca aclarar
-
-    # Reportes enviados por este usuario
-    reports_sent: Mapped[list["Report"]] = relationship(
-        back_populates="user",
-        foreign_keys="Report.id_user"
-    )
-    # Reportes atendidos por este usuario como moderador
-    reports_moderated: Mapped[list["Report"]] = relationship(
-        back_populates="moderator",
-        foreign_keys="Report.id_moderator"
-    )
-
     # Usuarios que este usuario sigue
     following: Mapped[list["Follow"]] = relationship(
         back_populates="follower",

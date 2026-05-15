@@ -5,7 +5,7 @@ from datetime import datetime, date
 from app.database import get_db
 from app.models.task import Task, TaskStatus, TaskRecurrenceType
 from app.models.user import User
-from app.schemas.task import TaskCreate, TaskUpdate, TaskResponse
+from app.schemas.taskSCH import TaskCreate, TaskUpdate, TaskResponse
 from dependencies import get_current_user
 
 router = APIRouter(prefix="/tasks", tags=["Tareas"])

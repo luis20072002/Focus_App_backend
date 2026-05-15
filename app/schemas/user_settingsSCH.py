@@ -27,13 +27,10 @@ class UserSettingsCreate(UserSettingsBase):
 
 class UserSettingsUpdate(BaseModel):
     notif_push: Optional[bool] = None
-    notif_email: Optional[bool] = None
     notif_task_reminder: Optional[bool] = None
     notif_task_expired: Optional[bool] = None
     notif_urgent_task: Optional[bool] = None
     notif_new_follower: Optional[bool] = None
-    notif_report_reviewed: Optional[bool] = None
-    notif_photo_liked: Optional[bool] = None
     notif_suggestion_resolved: Optional[bool] = None
     notif_reminder_minutes: Optional[int] = None
     theme: Optional[ThemeType] = None

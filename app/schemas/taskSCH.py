@@ -6,6 +6,7 @@ from app.models.task import TaskNotificationType, TaskStatus, TaskRecurrenceType
 
 class TaskBase(BaseModel):
     id_task_template: Optional[int] = None
+    is_foint_candidate: bool = False
     name: str
     description: Optional[str] = None
     is_urgent: bool = False
@@ -20,6 +21,12 @@ class TaskBase(BaseModel):
     recurrence_end_date: Optional[date] = None
 
     @model_validator(mode="after")
+    def validar_foints(self) -> "TaskBase":
+        if self.is_foint_candidate and self.id_task_template is None:
+            raise ValueError("Solo las tareas de plantilla pueden ser candidatas a Foints")
+        return self
+
+    @model_validator(mode="after")
     def validar_recurrencia(self) -> "TaskBase":
         if self.is_recurrent:
             if self.recurrence_type == TaskRecurrenceType.none:
@@ -27,13 +34,11 @@ class TaskBase(BaseModel):
             if self.recurrence_type in (TaskRecurrenceType.weekly, TaskRecurrenceType.custom):
                 if not self.recurrence_days:
                     raise ValueError("Debe especificar los dias de recurrencia para recurrencia semanal o personalizada")
-                # Validar que los dias sean numeros del 1 al 7
                 dias = self.recurrence_days.split(",")
                 for dia in dias:
                     if not dia.strip().isdigit() or int(dia.strip()) not in range(1, 8):
                         raise ValueError("Los dias de recurrencia deben ser numeros del 1 (lunes) al 7 (domingo)")
         else:
-            # Si no es recurrente, limpiar campos de recurrencia
             self.recurrence_type = TaskRecurrenceType.none
             self.recurrence_days = None
             self.recurrence_end_date = None
@@ -51,6 +56,7 @@ class TaskUpdate(BaseModel):
     scheduled_date: Optional[datetime] = None
     notification_type: Optional[TaskNotificationType] = None
     status: Optional[TaskStatus] = None
+    is_foint_candidate: Optional[bool] = None
     is_recurrent: Optional[bool] = None
     recurrence_type: Optional[TaskRecurrenceType] = None
     recurrence_days: Optional[str] = None

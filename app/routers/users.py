@@ -4,7 +4,7 @@ from passlib.context import CryptContext
 
 from app.database import get_db
 from app.models.user import User
-from app.schemas.user import UserResponse, UserUpdate
+from app.schemas.userSCH import UserResponse, UserUpdate
 from dependencies import get_current_user, solo_admin
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

@@ -47,12 +47,3 @@ def solo_admin(current_user: User = Depends(get_current_user)) -> User:
             detail="Se requiere rol de administrador"
         )
     return current_user
-
-
-def solo_moderador_o_admin(current_user: User = Depends(get_current_user)) -> User:
-    if current_user.id_role not in (1, 2):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Se requiere rol de moderador o administrador"
-        )
-    return current_user

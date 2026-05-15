@@ -5,8 +5,8 @@ from app.database import get_db
 from app.models.task_template import TaskTemplate
 from app.models.template_category import TemplateCategory
 from app.models.user import User
-from app.schemas.task_template import TaskTemplateCreate, TaskTemplateUpdate, TaskTemplateResponse
-from app.schemas.template_category import TemplateCategoryCreate, TemplateCategoryUpdate, TemplateCategoryResponse
+from app.schemas.task_templateSCH import TaskTemplateCreate, TaskTemplateUpdate, TaskTemplateResponse
+from app.schemas.template_categorySCH import TemplateCategoryCreate, TemplateCategoryUpdate, TemplateCategoryResponse
 from dependencies import get_current_user, solo_admin
 
 router = APIRouter(prefix="/templates", tags=["Plantillas"])

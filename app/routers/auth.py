@@ -10,7 +10,7 @@ import os
 from app.database import get_db
 from app.models.user import User
 from app.models.user_settings import UserSettings
-from app.schemas.user import UserCreate, UserResponse
+from app.schemas.userSCH import UserCreate, UserResponse
 from dependencies import get_current_user
 
 load_dotenv()

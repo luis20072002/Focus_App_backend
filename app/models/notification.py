@@ -11,8 +11,6 @@ class NotificationType(enum.Enum):
     task_expired = "tarea_vencida"
     urgent_task = "tarea_urgente"
     new_follower = "nuevo_seguidor"
-    report_reviewed = "reporte_revisado"
-    photo_liked = "foto_con_like"
     suggestion_resolved = "sugerencia_resuelta"
 
 
