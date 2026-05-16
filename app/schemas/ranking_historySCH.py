@@ -1,5 +1,4 @@
 from pydantic import BaseModel, field_validator
-from datetime import date
 
 
 class RankingHistoryBase(BaseModel):
@@ -22,11 +21,13 @@ class RankingHistoryBase(BaseModel):
 
 
 class RankingHistoryCreate(RankingHistoryBase):
-    id_user: int  # Lo asigna el sistema al cerrar el ciclo
+    id_user: int   # Lo asigna el sistema al cerrar el ciclo
+    id_cycle: int  # FK al ciclo que se está cerrando
 
 
 class RankingHistoryResponse(RankingHistoryBase):
     id_history: int
     id_user: int
+    id_cycle: int
 
     model_config = {"from_attributes": True}

@@ -6,7 +6,6 @@ from app.models.user_settings import ThemeType
 
 class UserSettingsBase(BaseModel):
     notif_push: bool = True
-    notif_email: bool = False
     notif_task_reminder: bool = True
     notif_task_expired: bool = True
     notif_urgent_task: bool = True

@@ -17,7 +17,6 @@ class UserSettings(Base):
     id_settings: Mapped[int] = mapped_column(Integer, primary_key=True)
     id_user: Mapped[int] = mapped_column(Integer, ForeignKey("user.id_user"), nullable=False, unique=True)
     notif_push: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
-    notif_email: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     notif_task_reminder: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     notif_task_expired: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     notif_urgent_task: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
