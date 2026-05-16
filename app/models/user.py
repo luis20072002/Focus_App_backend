@@ -64,3 +64,6 @@ class User(Base):
     verification_tokens: Mapped[list["VerificationToken"]] = relationship(back_populates="user")
 
     ranking_history: Mapped[list["RankingHistory"]] = relationship(back_populates="user")
+    
+    device_tokens: Mapped[list["DeviceToken"]] = relationship(back_populates="user")
+    foint_transactions: Mapped[list["FointTransaction"]] = relationship(back_populates="user")

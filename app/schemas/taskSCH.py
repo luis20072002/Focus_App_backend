@@ -68,5 +68,6 @@ class TaskResponse(TaskBase):
     id_user: int
     foints_earned: Optional[int] = None
     created_at: datetime
+    completed_at: Optional[datetime] = None
 
     model_config = {"from_attributes": True}

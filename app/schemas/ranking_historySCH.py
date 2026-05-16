@@ -3,8 +3,6 @@ from datetime import date
 
 
 class RankingHistoryBase(BaseModel):
-    cycle_start_date: date
-    cycle_end_date: date
     global_position: int
     foints_cycle: int
 

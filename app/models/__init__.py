@@ -12,3 +12,8 @@ from app.models.verification_token import VerificationToken
 from app.models.ranking_history import RankingHistory
 from app.models.task_template import TaskTemplate
 from app.models.template_category import TemplateCategory
+
+from app.models.device_token import DeviceToken
+from app.models.foint_transaction import FointTransaction
+from app.models.ranking_cycle import RankingCycle
+

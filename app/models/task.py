@@ -40,6 +40,7 @@ class Task(Base):
     status: Mapped[TaskStatus] = mapped_column(Enum(TaskStatus), nullable=False)
     foints_earned: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    completed_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
 
     # Campos de recurrencia
     is_recurrent: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
@@ -58,3 +59,4 @@ class Task(Base):
 )
 
     user: Mapped["User"] = relationship(back_populates="tasks")
+    foint_transactions: Mapped[list["FointTransaction"]] = relationship(back_populates="task")

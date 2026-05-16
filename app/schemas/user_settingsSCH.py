@@ -11,8 +11,6 @@ class UserSettingsBase(BaseModel):
     notif_task_expired: bool = True
     notif_urgent_task: bool = True
     notif_new_follower: bool = True
-    notif_report_reviewed: bool = True
-    notif_photo_liked: bool = True
     notif_suggestion_resolved: bool = True
     notif_reminder_minutes: int = 30
     theme: ThemeType = ThemeType.light
