@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from datetime import datetime
 from app.models.verification_token import TokenType, TokenSendMethod
 
@@ -14,6 +14,18 @@ class VerificationTokenCreate(VerificationTokenBase):
 
 class VerificationTokenVerify(BaseModel):
     token: str  # El codigo que el usuario recibe y escribe en la app
+
+
+class PasswordResetConfirm(BaseModel):
+    token: str
+    new_password: str
+
+    @field_validator("new_password")
+    @classmethod
+    def password_strength(cls, v: str) -> str:
+        if len(v) < 8:
+            raise ValueError("La contraseña debe tener al menos 8 caracteres")
+        return v
 
 
 class VerificationTokenResponse(VerificationTokenBase):
