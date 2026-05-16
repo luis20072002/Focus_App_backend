@@ -60,7 +60,6 @@ def register(datos: UserCreate, db: Session = Depends(get_db)):
         description=datos.description,
         private_profile=datos.private_profile,
         id_role=3,  # usuario normal por defecto
-        created_at=datetime.utcnow(),
         active=True
     )
     db.add(nuevo_usuario)
