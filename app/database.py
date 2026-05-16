@@ -1,12 +1,8 @@
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine
 from sqlalchemy.engine import URL
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
-
-
 from dotenv import load_dotenv
 import os
-
-
 
 load_dotenv()
 
@@ -25,8 +21,6 @@ SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 class Base(DeclarativeBase):
     pass
 
-import app.models
-
 def get_db():
     db = SessionLocal()
     try:
@@ -35,3 +29,4 @@ def get_db():
     finally:
         db.close()
         print("Conexión cerrada")
+
