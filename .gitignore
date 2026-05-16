@@ -1,6 +1,6 @@
 # Variables de entorno
 .env
-
+firebase_credentials.json
 # Cache de Python
 __pycache__/
 *.pyc
