@@ -15,7 +15,6 @@ class TemplateSuggestionCreate(TemplateSuggestionBase):
  
 class TemplateSuggestionUpdate(BaseModel):
     status: Optional[SuggestionStatus] = None
-    id_admin: Optional[int] = None
  
  
 class TemplateSuggestionResponse(TemplateSuggestionBase):

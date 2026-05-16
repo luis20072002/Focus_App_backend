@@ -1,8 +1,8 @@
 from typing import Optional
 from app.database import Base
+from app.models.mixins import TimestampMixin  # <-- import
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import Text, Boolean, Integer, String, DateTime, ForeignKey, Enum
-from datetime import datetime
+from sqlalchemy import Text, Boolean, Integer, String, ForeignKey, Enum
 import enum
 
 
@@ -11,7 +11,7 @@ class ThemeType(enum.Enum):
     dark = "oscuro"
 
 
-class UserSettings(Base):
+class UserSettings(TimestampMixin, Base):  # <-- herencia
     __tablename__ = "user_settings"
 
     id_settings: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -27,6 +27,6 @@ class UserSettings(Base):
     language: Mapped[str] = mapped_column(String(10), nullable=False, default="es")
     app_purpose: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     referred_by_friend: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    # updated_at ya no va aquí, viene del mixin
 
     user: Mapped["User"] = relationship(back_populates="settings")

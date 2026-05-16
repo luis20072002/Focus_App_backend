@@ -37,6 +37,21 @@ class UserUpdate(BaseModel):
     private_profile: Optional[bool] = None
     password: Optional[str] = None
 
+    @model_validator(mode="after")
+    def validate_contact_info(self):
+        # Solo bloquea el caso explícito:
+        # PATCH enviando ambos en null
+
+        if self.email is None and self.phone is None:
+            provided_fields = self.model_fields_set
+
+            if "email" in provided_fields and "phone" in provided_fields:
+                raise ValueError(
+                    "No puedes eliminar correo y teléfono simultáneamente"
+                )
+
+        return self
+
 
 class UserResponse(UserBase):
     id_user: int

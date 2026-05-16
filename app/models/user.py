@@ -1,11 +1,12 @@
 from typing import Optional
 from app.database import Base
+from app.models.mixins import CreatedAtMixin
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, Text, Boolean, Integer, DateTime, Date, CheckConstraint, ForeignKey
 from datetime import datetime, date
 
 
-class User(Base):
+class User(CreatedAtMixin, Base):
     __tablename__ = "user"
 
     id_user: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -22,7 +23,6 @@ class User(Base):
     foints_season: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     foints_total: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     id_role: Mapped[int] = mapped_column(Integer, ForeignKey("role.id_role"), nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
 
     __table_args__ = (

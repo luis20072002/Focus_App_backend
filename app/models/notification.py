@@ -3,6 +3,7 @@ from app.database import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import Text, Boolean, Integer, DateTime, ForeignKey, Enum
 from datetime import datetime
+from sqlalchemy.sql import func
 import enum
 
 
@@ -22,7 +23,11 @@ class Notification(Base):
     type: Mapped[NotificationType] = mapped_column(Enum(NotificationType), nullable=False)
     message: Mapped[str] = mapped_column(Text, nullable=False)
     read: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
-    date: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    date: Mapped[datetime] = mapped_column(
+    DateTime,
+    server_default=func.now(),
+    nullable=False
+)
     id_reference: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
 
     user: Mapped["User"] = relationship(back_populates="notifications")

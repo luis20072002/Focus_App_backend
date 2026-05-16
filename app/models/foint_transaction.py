@@ -1,5 +1,6 @@
 from typing import Optional
 from app.database import Base
+from app.models.mixins import CreatedAtMixin
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import Integer, DateTime, ForeignKey, Enum, CheckConstraint
 from datetime import datetime
@@ -13,7 +14,7 @@ class FointReason(enum.Enum):
     manual_adjustment = "ajuste_manual"
 
 
-class FointTransaction(Base):
+class FointTransaction(CreatedAtMixin, Base):
     __tablename__ = "foint_transaction"
 
     id_transaction: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -21,7 +22,6 @@ class FointTransaction(Base):
     id_task: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey("task.id_task"), nullable=True)
     amount: Mapped[int] = mapped_column(Integer, nullable=False)  # Puede ser negativo
     reason: Mapped[FointReason] = mapped_column(Enum(FointReason), nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
 
     __table_args__ = (
         CheckConstraint("amount != 0", name="foint_transaction_amount_not_zero_ck"),

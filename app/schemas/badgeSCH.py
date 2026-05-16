@@ -27,6 +27,18 @@ class BadgeUpdate(BaseModel):
     min_position: Optional[int] = None
     max_position: Optional[int] = None
 
+    @model_validator(mode="after")
+    def validate_partial_positions(self):
+        if (
+            self.min_position is not None
+            and self.max_position is not None
+        ):
+            if self.min_position > self.max_position:
+                raise ValueError(
+                    "min_position no puede ser mayor que max_position"
+                )
+        return self
+
 
 class BadgeResponse(BadgeBase):
     id_badge: int

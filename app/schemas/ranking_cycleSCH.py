@@ -22,6 +22,19 @@ class RankingCycleUpdate(BaseModel):
     closed: Optional[bool] = None
     closed_at: Optional[datetime] = None
 
+    @model_validator(mode="after")
+    def validate_closed_state(self):
+
+        if self.closed is False and self.closed_at is not None:
+            raise ValueError(
+                "Un ciclo abierto no puede tener closed_at"
+            )
+
+        return self
+    
+    # En el endpoint: si closed=True, asignar closed_at = datetime.utcnow()
+    # independientemente de si el cliente lo mandó o no.
+
 
 class RankingCycleResponse(RankingCycleBase):
     id_cycle: int

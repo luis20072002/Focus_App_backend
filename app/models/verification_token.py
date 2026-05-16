@@ -1,4 +1,5 @@
 from app.database import Base
+from app.models.mixins import CreatedAtMixin
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, Boolean, Integer, DateTime, ForeignKey, Enum
 from datetime import datetime
@@ -15,7 +16,7 @@ class TokenSendMethod(enum.Enum):
     phone = "telefono"
 
 
-class VerificationToken(Base):
+class VerificationToken(CreatedAtMixin, Base):
     __tablename__ = "verification_token"
 
     id_token: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -25,6 +26,5 @@ class VerificationToken(Base):
     send_method: Mapped[TokenSendMethod] = mapped_column(Enum(TokenSendMethod), nullable=False)
     used: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     expires_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
 
     user: Mapped["User"] = relationship(back_populates="verification_tokens")

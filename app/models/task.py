@@ -1,5 +1,6 @@
 from typing import Optional
 from app.database import Base
+from app.models.mixins import CreatedAtMixin
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, Text, Boolean, Integer, DateTime, Date, ForeignKey, CheckConstraint, Enum
 from datetime import datetime, date
@@ -25,14 +26,14 @@ class TaskRecurrenceType(enum.Enum):
     custom = "personalizada"
 
 
-class Task(Base):
+class Task(CreatedAtMixin, Base):
     __tablename__ = "task"
 
     id_task: Mapped[int] = mapped_column(Integer, primary_key=True)
     id_user: Mapped[int] = mapped_column(Integer, ForeignKey("user.id_user"), nullable=False)
     # RF-B06: máximo 3 tareas diarias con is_foint_candidate=True por usuario.
     # Las tareas urgentes (is_urgent=True) no pueden ser candidatas.
-    # Esta regla se valida en la capa de servicio, no como constraint de BD.
+    # Esta regla se valida en el endpoint, no como constraint de BD.
     is_foint_candidate: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     id_task_template: Mapped[Optional[int]] = mapped_column(
         Integer, ForeignKey("task_template.id_task_template"), nullable=True
@@ -44,8 +45,7 @@ class Task(Base):
     notification_type: Mapped[TaskNotificationType] = mapped_column(Enum(TaskNotificationType), nullable=False)
     status: Mapped[TaskStatus] = mapped_column(Enum(TaskStatus), nullable=False)
     foints_earned: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
-    completed_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    completed_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)  # Se asigna en el endpoint al marcar como realizada
 
     # Campos de recurrencia
     is_recurrent: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)

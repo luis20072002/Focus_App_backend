@@ -1,7 +1,11 @@
-from pydantic import BaseModel, field_validator, model_validator
+from pydantic import BaseModel, model_validator
 from typing import Optional
 from datetime import datetime, date
-from app.models.task import TaskNotificationType, TaskStatus, TaskRecurrenceType
+from app.models.task import (
+    TaskNotificationType,
+    TaskStatus,
+    TaskRecurrenceType
+)
 
 
 class TaskBase(BaseModel):
@@ -56,12 +60,52 @@ class TaskUpdate(BaseModel):
     scheduled_date: Optional[datetime] = None
     notification_type: Optional[TaskNotificationType] = None
     status: Optional[TaskStatus] = None
+
+    id_task_template: Optional[int] = None
+    is_foint_candidate: Optional[bool] = None
+
+    is_recurrent: Optional[bool] = None
+    recurrence_type: Optional[TaskRecurrenceType] = None
+    recurrence_days: Optional[str] = None
+    recurrence_end_date: Optional[date] = None
+
+class TaskUpdate(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    is_urgent: Optional[bool] = None
+    scheduled_date: Optional[datetime] = None
+    notification_type: Optional[TaskNotificationType] = None
+    status: Optional[TaskStatus] = None
+    id_task_template: Optional[int] = None
     is_foint_candidate: Optional[bool] = None
     is_recurrent: Optional[bool] = None
     recurrence_type: Optional[TaskRecurrenceType] = None
     recurrence_days: Optional[str] = None
     recurrence_end_date: Optional[date] = None
 
+    @model_validator(mode="after")
+    def validar_patch_basico(self):
+        # Si se apaga la recurrencia explícitamente, limpiar campos relacionados
+        if self.is_recurrent is False:
+            self.recurrence_type = TaskRecurrenceType.none
+            self.recurrence_days = None
+            self.recurrence_end_date = None
+
+        # Si viene recurrence_type semanal/personalizado con days, validar formato
+        if self.recurrence_type in (TaskRecurrenceType.weekly, TaskRecurrenceType.custom):
+            if self.recurrence_days is not None:
+                dias = self.recurrence_days.split(",")
+                for dia in dias:
+                    if not dia.strip().isdigit() or int(dia.strip()) not in range(1, 8):
+                        raise ValueError(
+                            "Los dias de recurrencia deben ser numeros del 1 (lunes) al 7 (domingo)"
+                        )
+
+        # Nota: las validaciones cruzadas con el estado actual en BD
+        # (is_foint_candidate vs id_task_template existente, límite de 3 candidatas,
+        # is_recurrent vs recurrence_type existente) deben hacerse en el endpoint
+        # haciendo merge del estado actual con el payload antes de aplicar cambios.
+        return self
 
 class TaskResponse(TaskBase):
     id_task: int
