@@ -46,11 +46,13 @@ def inicializar_firebase() -> None:
     try:
         import firebase_admin
         from firebase_admin import credentials
-
-        cred_path = os.getenv("FIREBASE_CREDENTIALS_PATH", "firebase_credentials.json")
+        import json
 
         if not firebase_admin._apps:
-            cred = credentials.Certificate(cred_path)
+            # Leer desde variable de entorno en lugar de archivo
+            cred_json = os.getenv("FIREBASE_CREDENTIALS_JSON")
+            cred_dict = json.loads(cred_json)
+            cred = credentials.Certificate(cred_dict)
             firebase_admin.initialize_app(cred)
 
         _firebase_inicializado = True
