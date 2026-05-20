@@ -521,6 +521,7 @@ def get_calendar_tasks(
                 recurrence_type=tarea.recurrence_type,
                 recurrence_days=tarea.recurrence_days,
                 recurrence_end_date=tarea.recurrence_end_date,
+                created_at=tarea.created_at,
             )
             resultados.append(tarea_virtual)
 
