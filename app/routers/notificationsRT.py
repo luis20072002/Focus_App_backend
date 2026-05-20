@@ -160,7 +160,7 @@ def crear_notificacion_db(
         id_reference=id_reference,
     )
     db.add(notif)
-    db.commit()
+    db.flush()
     db.refresh(notif)
     return notif
 
@@ -190,10 +190,21 @@ def notificar_usuario(
             id_reference=current_user.id_user,
         )
     """
-    notif = crear_notificacion_db(id_user, tipo, mensaje, db, id_reference)
-    enviar_push_a_usuario(id_user, titulo_push, mensaje, db, data_push)
-    return notif
+    # Persistir en BD sin cerrar la transacción del llamador
+    notif = Notification(
+        id_user=id_user,
+        type=tipo,
+        message=mensaje,
+        id_reference=id_reference,
+    )
+    db.add(notif)
+    db.flush()
+    db.refresh(notif)
 
+    # Enviar push (limpia tokens inválidos internamente si los hay)
+    enviar_push_a_usuario(id_user, titulo_push, mensaje, db, data_push)
+
+    return notif
 
 # ---------------------------------------------------------------------------
 # POST /notifications/device-token — Registrar token de dispositivo (RF-B10)
